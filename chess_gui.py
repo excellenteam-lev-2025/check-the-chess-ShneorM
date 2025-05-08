@@ -11,6 +11,9 @@ import pygame as py
 import ai_engine
 from enums import Player
 
+from logger_config import logger  
+
+
 """Variables"""
 WIDTH = HEIGHT = 512  # width and height of the chess board
 DIMENSION = 8  # the dimensions of the chess board
@@ -147,18 +150,41 @@ def main():
                             player_clicks = []
                             valid_moves = []
                         else:
+                            moving_piece = game_state.get_piece(player_clicks[0][0], player_clicks[0][1])
+                            logger.info(f"{moving_piece.get_name()} moved from {player_clicks[0]} to {player_clicks[1]}.")
                             game_state.move_piece((player_clicks[0][0], player_clicks[0][1]),
                                                   (player_clicks[1][0], player_clicks[1][1]), False)
+                            
+                            # Check if the move results in a check
+                            if game_state.check_for_check(game_state._white_king_location, Player.PLAYER_1)[0]:
+                                logger.info("White is in check!")
+                            if game_state.check_for_check(game_state._black_king_location, Player.PLAYER_2)[0]:
+                                logger.info("Black is in check!")
+
                             square_selected = ()
                             player_clicks = []
                             valid_moves = []
 
                             if human_player is 'w':
                                 ai_move = ai.minimax_white(game_state, 3, -100000, 100000, True, Player.PLAYER_2)
+                                logger.info(f"AI moved {game_state.get_piece(ai_move[0][0], ai_move[0][1]).get_name()} "f"from {ai_move[0]} to {ai_move[1]}.")
                                 game_state.move_piece(ai_move[0], ai_move[1], True)
+                                # Check if the move results in a check
+                                if game_state.check_for_check(game_state._white_king_location, Player.PLAYER_1)[0]:
+                                    logger.info("White is in check!")
+                                if game_state.check_for_check(game_state._black_king_location, Player.PLAYER_2)[0]:
+                                    logger.info("Black is in check!")
+
                             elif human_player is 'b':
                                 ai_move = ai.minimax_black(game_state, 3, -100000, 100000, True, Player.PLAYER_1)
+                                logger.info(f"AI moved {game_state.get_piece(ai_move[0][0], ai_move[0][1]).get_name()} "f"from {ai_move[0]} to {ai_move[1]}.")
                                 game_state.move_piece(ai_move[0], ai_move[1], True)
+
+                                # Check if the move results in a check
+                                if game_state.check_for_check(game_state._white_king_location, Player.PLAYER_1)[0]:
+                                    logger.info("White is in check!")
+                                if game_state.check_for_check(game_state._black_king_location, Player.PLAYER_2)[0]:
+                                    logger.info("Black is in check!")
                     else:
                         valid_moves = game_state.get_valid_moves((row, col))
                         if valid_moves is None:
@@ -181,12 +207,15 @@ def main():
         if endgame == 0:
             game_over = True
             draw_text(screen, "Black wins.")
+            logger.info("Black wins.")
         elif endgame == 1:
             game_over = True
             draw_text(screen, "White wins.")
+            logger.info("White wins.")
         elif endgame == 2:
             game_over = True
             draw_text(screen, "Stalemate.")
+            logger.info("Stalemate.")
 
         clock.tick(MAX_FPS)
         py.display.flip()
