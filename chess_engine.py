@@ -328,6 +328,14 @@ class game_state:
 
             if ending_square in valid_moves:
                 moved_to_piece = self.get_piece(next_square_row, next_square_col)
+                # Add captured piece to captives list before overwriting the square
+                if moved_to_piece != Player.EMPTY:
+                    if moved_to_piece.is_player(Player.PLAYER_1):
+                        self.white_captives.append(moved_to_piece)
+                    elif moved_to_piece.is_player(Player.PLAYER_2):
+                        self.black_captives.append(moved_to_piece)
+
+
                 if moving_piece.get_name() is "k":
                     if moving_piece.is_player(Player.PLAYER_1):
                         if moved_to_piece == Player.EMPTY and next_square_col == 1 and self.king_can_castle_left(

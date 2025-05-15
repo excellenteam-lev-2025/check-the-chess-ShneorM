@@ -1,7 +1,32 @@
-#
-# Untrack files
-#
+# macOS system files
+.DS_Store
 
-venv
-__pycache__
-.idea
+# Windows system files
+Thumbs.db
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment folders
+venv/
+env/
+
+# Pytest cache folder
+.pytest_cache/
+
+# Log files
+*.log
+
+# VSCode editor settings
+.vscode/
+
+# Replit configuration file
+.replit
+
+# Temporary files from some editors
+*.swp
+*.swo
+
+# Demo or sample footage directory (not source code)
+demo-footage/
